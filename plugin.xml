@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-berbix-plugin" version="0.0.1">
+    <name>Berbix Verify</name>
+    <description>Cordova SDK for integrating with Berbix Verify</description>
+    <license>Apache 2.0</license>
+    <keywords>berbix,identity verification</keywords>
+    <js-module src="www/Berbix.js" name="Berbix">
+        <clobbers target="berbix" />
+    </js-module>
+    <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+        <feature name="Berbix">
+            <param name="ios-package" value="Berbix" />
+        </feature>
+    </config-file>
+    <source-file src="src/ios/Berbix.swift" />
+            <podspec>
+      <config>
+        <source url="https://github.com/CocoaPods/Specs.git" />
+        <source url="https://github.com/berbix/berbix-ios-spec.git"/>
+      </config>
+      <pods use-frameworks="true">
+        <pod name="Berbix" spec="0.0.17" />
+      </pods>
+    </podspec>
+    </platform>
+</plugin>
