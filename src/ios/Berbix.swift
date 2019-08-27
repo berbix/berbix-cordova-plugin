@@ -1,47 +1,106 @@
 import Berbix
 
-@objc(Berbix) class Berbix : CDVPlugin, BerbixSDKDelegate {
-  @objc(echo:)
-  func echo(command: CDVInvokedUrlCommand) {
-    var pluginResult = CDVPluginResult(
-      status: CDVCommandStatus_ERROR
-    )
+class BerbixHandler : BerbixSDKDelegate {
+    var plugin: CDVPlugin
+    var clientID: String
+    var config: BerbixConfiguration
+    var callbackID: String
 
-    let msg = command.arguments[0] as? String ?? ""
-
-    if msg.characters.count > 0 {
-        let berbixSDK = BerbixSDK.init(clientID: "JwZ_PatHf5pe1VqVnSd1_DbocrzFqPNS")
-        let config = BerbixConfigurationBuilder()
-        .withBaseURL("https://eric.dev.berbix.com:8443")
-            .withRoleKey("zZa8mzSepqJu-8cfupZ11vdukLK9v1J8")
-            .build()
-        berbixSDK.startFlow(self.viewController, delegate: self, config: config)
-        
-      pluginResult = CDVPluginResult(
-        status: CDVCommandStatus_OK,
-        messageAs: msg
-      )
+    init(plugin: CDVPlugin, clientID: String, config: BerbixConfiguration, callbackID: String) {
+        self.plugin = plugin
+        self.clientID = clientID
+        self.config = config
+        self.callbackID = callbackID
     }
 
-    self.commandDelegate!.send(
-      pluginResult,
-      callbackId: command.callbackId
-    )
+    func start(controller: UIViewController) {
+        let berbixSDK = BerbixSDK.init(clientID: clientID)
+        berbixSDK.startFlow(controller, delegate: self, config: config)
+    }
+
+    func completed() {
+        let pluginResult = CDVPluginResult(
+            status: CDVCommandStatus_OK
+        )
+
+        plugin.commandDelegate!.send(
+            pluginResult,
+            callbackId: callbackID
+        )
+    }
+
+    func failed(error: Error) {
+        let pluginResult = CDVPluginResult(
+            status: CDVCommandStatus_ERROR,
+            messageAs: error.localizedDescription
+        )
+
+        plugin.commandDelegate!.send(
+            pluginResult,
+            callbackId: callbackID
+        )
+    }
+}
+
+@objc(Berbix) class Berbix : CDVPlugin {
+  @objc(verify:)
+  func verify(command: CDVInvokedUrlCommand) {
+    let options = command.arguments[0] as! [String: Any]
+
+    let clientID = options["client_id"] as? String
+    let templateKey = options["template_key"] as? String
+    let baseURL = options["base_url"] as? String
+    let clientToken = options["client_token"] as? String
+    let environment = options["environment"] as? String
+
+    if clientID == nil {
+        let pluginResult = CDVPluginResult(
+            status: CDVCommandStatus_ERROR,
+            messageAs: "cannot start berbix flow without client ID"
+        )
+
+        commandDelegate!.send(
+            pluginResult,
+            callbackId: command.callbackId
+        )
+    }
+
+    var config = BerbixConfigurationBuilder()
+
+    if templateKey != nil {
+        config = config.withTemplateKey(templateKey!)
+    }
+    if baseURL != nil {
+        config = config.withBaseURL(baseURL!)
+    }
+    if clientToken != nil {
+        config = config.withClientToken(clientToken!)
+    }
+    if environment != nil {
+        if let env = getEnvironment(environment!) {
+            config = config.withEnvironment(env)
+        }
+    }
+
+    let handler = BerbixHandler(
+        plugin: self,
+        clientID: clientID!,
+        config: config.build(),
+        callbackID: command.callbackId)
+
+    handler.start(controller: viewController)
   }
 
-      func completed() {
-        print("completed successfully")
-    }
-    
-    func failed(error: Error) {
-        switch error {
-        case BerbixError.userExitError:
-            print("user exited early")
-        case BerbixError.permissionError:
-            print("there was a permission error")
+    func getEnvironment(_ env: String) -> BerbixEnvironment? {
+        switch env {
+        case "production":
+            return .production
+        case "staging":
+            return .staging
+        case "sandbox":
+            return .sandbox
         default:
-            print("there was a default error", error)
+            return nil
         }
-        print("failed...", error.localizedDescription)
     }
 }
