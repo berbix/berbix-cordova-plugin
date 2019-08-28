@@ -1,0 +1,6 @@
+repositories{
+    jcenter()
+    maven {
+        url "https://storage.googleapis.com/berbix-mobile-releases/repo"
+    }
+}
