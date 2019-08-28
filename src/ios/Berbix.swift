@@ -43,53 +43,53 @@ class BerbixHandler : BerbixSDKDelegate {
 }
 
 @objc(Berbix) class Berbix : CDVPlugin {
-  @objc(verify:)
-  func verify(command: CDVInvokedUrlCommand) {
-    let options = command.arguments[0] as! [String: Any]
+    @objc(verify:)
+    func verify(command: CDVInvokedUrlCommand) {
+        let options = command.arguments[0] as! [String: Any]
 
-    let clientID = options["client_id"] as? String
-    let templateKey = options["template_key"] as? String
-    let baseURL = options["base_url"] as? String
-    let clientToken = options["client_token"] as? String
-    let environment = options["environment"] as? String
+        let clientID = options["client_id"] as? String
+        let templateKey = options["template_key"] as? String
+        let baseURL = options["base_url"] as? String
+        let clientToken = options["client_token"] as? String
+        let environment = options["environment"] as? String
 
-    if clientID == nil {
-        let pluginResult = CDVPluginResult(
-            status: CDVCommandStatus_ERROR,
-            messageAs: "cannot start berbix flow without client ID"
-        )
+        if clientID == nil {
+            let pluginResult = CDVPluginResult(
+                status: CDVCommandStatus_ERROR,
+                messageAs: "cannot start berbix flow without client ID"
+            )
 
-        commandDelegate!.send(
-            pluginResult,
-            callbackId: command.callbackId
-        )
-    }
-
-    var config = BerbixConfigurationBuilder()
-
-    if templateKey != nil {
-        config = config.withTemplateKey(templateKey!)
-    }
-    if baseURL != nil {
-        config = config.withBaseURL(baseURL!)
-    }
-    if clientToken != nil {
-        config = config.withClientToken(clientToken!)
-    }
-    if environment != nil {
-        if let env = getEnvironment(environment!) {
-            config = config.withEnvironment(env)
+            commandDelegate!.send(
+                pluginResult,
+                callbackId: command.callbackId
+            )
         }
+
+        var config = BerbixConfigurationBuilder()
+
+        if templateKey != nil {
+            config = config.withTemplateKey(templateKey!)
+        }
+        if baseURL != nil {
+            config = config.withBaseURL(baseURL!)
+        }
+        if clientToken != nil {
+            config = config.withClientToken(clientToken!)
+        }
+        if environment != nil {
+            if let env = getEnvironment(environment!) {
+                config = config.withEnvironment(env)
+            }
+        }
+
+        let handler = BerbixHandler(
+            plugin: self,
+            clientID: clientID!,
+            config: config.build(),
+            callbackID: command.callbackId)
+
+        handler.start(controller: viewController)
     }
-
-    let handler = BerbixHandler(
-        plugin: self,
-        clientID: clientID!,
-        config: config.build(),
-        callbackID: command.callbackId)
-
-    handler.start(controller: viewController)
-  }
 
     func getEnvironment(_ env: String) -> BerbixEnvironment? {
         switch env {
