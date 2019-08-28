@@ -9,6 +9,7 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 import org.apache.cordova.PermissionHelper;
 
+import com.berbix.berbixverify.BerbixEnvironment;
 import com.berbix.berbixverify.BerbixSDK;
 import com.berbix.berbixverify.BerbixSDKAdapter;
 import com.berbix.berbixverify.BerbixSDKOptions;
@@ -21,6 +22,10 @@ public class BerbixPlugin extends CordovaPlugin implements BerbixSDKAdapter {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
+        if (!VERIFY.equals(action)) {
+            return false;
+        }
+
         JSONObject config = args.optJSONObject(0);
 
         if (config == null) {
@@ -50,6 +55,12 @@ public class BerbixPlugin extends CordovaPlugin implements BerbixSDKAdapter {
         if (!clientToken.isEmpty()) {
             options = options.setClientToken(clientToken);
         }
+        if (!environment.isEmpty()) {
+            BerbixEnvironment env = getEnvironment(environment);
+            if (env != null) {
+                options = options.setEnvironment(env);
+            }
+        }
 
         BerbixSDK sdk = new BerbixSDK(clientID);
         final BerbixSDKOptions sdkOptions = options.build();
@@ -73,5 +84,18 @@ public class BerbixPlugin extends CordovaPlugin implements BerbixSDKAdapter {
     @Override
     public void onError(Throwable error) {
         this.callbackContext.error(error.toString());
+    }
+
+    private static BerbixEnvironment getEnvironment(String environment) {
+        switch (environment) {
+        case "production":
+            return BerbixEnvironment.PRODUCTION;
+        case "staging":
+            return BerbixEnvironment.STAGING;
+        case "sandbox":
+            return BerbixEnvironment.SANDBOX;
+        default:
+            return null;
+        }
     }
 }

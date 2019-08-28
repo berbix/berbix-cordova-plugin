@@ -1,11 +1,15 @@
 {
   "name": "cordova-berbix-plugin",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "description": "Cordova plugin for using the Berbix Verify flow.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/berbix/cordova-berbix-plugin"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Eric Levine <eric@berbix.com>",
+  "homepage": "https://berbix.com",
+  "license": "MIT"
 }
