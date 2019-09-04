@@ -4,9 +4,9 @@
 
 ### Install prerequisites
 
-cordova platform add ios
-cordova platform add android
-cordova plugin add cordova-plugin-add-swift-support
+    cordova platform add ios
+    cordova platform add android
+    cordova plugin add cordova-plugin-add-swift-support
 
 ### Configuration
 
