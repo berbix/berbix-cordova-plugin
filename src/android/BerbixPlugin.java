@@ -22,6 +22,8 @@ public class BerbixPlugin extends CordovaPlugin implements BerbixSDKAdapter {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
+        // "verify" is the only action, so this departs from the typical cordova
+        // pattern a bit
         if (!VERIFY.equals(action)) {
             return false;
         }
