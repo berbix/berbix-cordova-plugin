@@ -1,4 +1,4 @@
-# Cordova Berbix Plugin
+# Berbix Cordova Plugin
 
 ## Installation
 
