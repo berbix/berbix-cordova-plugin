@@ -1,5 +1,5 @@
 {
-  "name": "cordova-berbix-plugin",
+  "name": "berbix-cordova-plugin",
   "version": "0.0.1",
   "description": "Cordova plugin for using the Berbix Verify flow.",
   "repository": {

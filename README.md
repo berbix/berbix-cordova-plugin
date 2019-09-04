@@ -10,9 +10,13 @@
 
 ### Configuration
 
+In your `config.xml`, add the following configuration to the `<platform name="ios">` tag.
+
 ```xml
 <preference name="deployment-target" value="11.0.0" />
 ```
+
+In your `config.xml`, add the following configuration to the top level.
 
 ```xml
 <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
@@ -28,7 +32,7 @@ Ensure that your Cordova project can build before installing the Berbix plugin.
 
 Finally, install the Cordova plugin.
 
-    cordova plugin add cordova-berbix-plugin
+    cordova plugin add berbix-cordova-plugin
 
 ## Usage
 
