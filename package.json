@@ -4,7 +4,7 @@
   "description": "Cordova plugin for using the Berbix Verify flow.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/berbix/cordova-berbix-plugin"
+    "url": "https://github.com/berbix/berbix-cordova-plugin"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
