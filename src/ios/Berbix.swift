@@ -52,6 +52,7 @@ class BerbixHandler : BerbixSDKDelegate {
         let baseURL = options["base_url"] as? String
         let clientToken = options["client_token"] as? String
         let environment = options["environment"] as? String
+        let debug = options["debug"] as? Bool
 
         if clientID == nil {
             let pluginResult = CDVPluginResult(
@@ -80,6 +81,9 @@ class BerbixHandler : BerbixSDKDelegate {
             if let env = getEnvironment(environment!) {
                 config = config.withEnvironment(env)
             }
+        }
+        if debug != nil {
+            config = config.withDebug(debug!)
         }
 
         let handler = BerbixHandler(

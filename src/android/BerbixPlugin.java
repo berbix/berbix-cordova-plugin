@@ -40,6 +40,7 @@ public class BerbixPlugin extends CordovaPlugin implements BerbixSDKAdapter {
         String baseURL = config.optString("base_url");
         String clientToken = config.optString("client_token");
         String environment = config.optString("environment");
+        boolean debug = config.optBoolean("debug", false);
 
         if (clientID == null) {
             callbackContext.error("cannot start berbix flow without client ID");
@@ -62,6 +63,9 @@ public class BerbixPlugin extends CordovaPlugin implements BerbixSDKAdapter {
             if (env != null) {
                 options = options.setEnvironment(env);
             }
+        }
+        if (debug) {
+            options = options.setDebug(debug);
         }
 
         BerbixSDK sdk = new BerbixSDK(clientID);

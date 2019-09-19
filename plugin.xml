@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="berbix-cordova-plugin" version="0.0.1">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="berbix-cordova-plugin" version="0.0.3">
   <name>Berbix Verify</name>
   <description>Cordova SDK for integrating with Berbix Verify</description>
   <license>Apache 2.0</license>
@@ -20,7 +20,7 @@
         <source url="https://github.com/berbix/berbix-ios-spec.git"/>
       </config>
       <pods use-frameworks="true">
-        <pod name="Berbix" spec="0.0.17" />
+        <pod name="Berbix" spec="0.0.20-beta2" />
       </pods>
     </podspec>
   </platform>
@@ -42,6 +42,6 @@
     <framework src="com.android.support:support-v4:28.0.0"/>
     <framework src="com.android.support.constraint:constraint-layout:1.1.3"/>
     <framework src="com.android.support:appcompat-v7:28.0.0"/>
-    <framework src="com.berbix:berbixverify:0.0.15"/>
+    <framework src="com.berbix:berbixverify:0.0.17"/>
   </platform>
 </plugin>
