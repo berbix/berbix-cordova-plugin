@@ -45,8 +45,6 @@ public class BerbixPlugin extends CordovaPlugin {
         String environment = config.optString("environment");
         boolean debug = config.optBoolean("debug", false);
 
-        Log.e("berbix-cordova", "options extracted");
-
         BerbixConfigurationBuilder optionsBuilder = new BerbixConfigurationBuilder();
 
         if (!baseURL.isEmpty()) {
