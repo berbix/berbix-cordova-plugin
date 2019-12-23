@@ -1,20 +1,18 @@
 import Berbix
 
-class BerbixHandler : BerbixSDKDelegate {
+class BerbixHandler : BerbixFlowDelegate {
     var plugin: CDVPlugin
-    var clientID: String
     var config: BerbixConfiguration
     var callbackID: String
 
-    init(plugin: CDVPlugin, clientID: String, config: BerbixConfiguration, callbackID: String) {
+    init(plugin: CDVPlugin, config: BerbixConfiguration, callbackID: String) {
         self.plugin = plugin
-        self.clientID = clientID
         self.config = config
         self.callbackID = callbackID
     }
 
     func start(controller: UIViewController) {
-        let berbixSDK = BerbixSDK.init(clientID: clientID)
+        let berbixSDK = BerbixSDK.init()
         berbixSDK.startFlow(controller, delegate: self, config: config)
     }
 
@@ -29,7 +27,7 @@ class BerbixHandler : BerbixSDKDelegate {
         )
     }
 
-    func failed(error: Error) {
+    func failed(error: BerbixError) {
         let pluginResult = CDVPluginResult(
             status: CDVCommandStatus_ERROR,
             messageAs: error.localizedDescription
@@ -47,30 +45,13 @@ class BerbixHandler : BerbixSDKDelegate {
     func verify(command: CDVInvokedUrlCommand) {
         let options = command.arguments[0] as! [String: Any]
 
-        let clientID = options["client_id"] as? String
-        let templateKey = options["template_key"] as? String
         let baseURL = options["base_url"] as? String
         let clientToken = options["client_token"] as? String
         let environment = options["environment"] as? String
         let debug = options["debug"] as? Bool
 
-        if clientID == nil {
-            let pluginResult = CDVPluginResult(
-                status: CDVCommandStatus_ERROR,
-                messageAs: "cannot start berbix flow without client ID"
-            )
-
-            commandDelegate!.send(
-                pluginResult,
-                callbackId: command.callbackId
-            )
-        }
-
         var config = BerbixConfigurationBuilder()
 
-        if templateKey != nil {
-            config = config.withTemplateKey(templateKey!)
-        }
         if baseURL != nil {
             config = config.withBaseURL(baseURL!)
         }
@@ -82,13 +63,12 @@ class BerbixHandler : BerbixSDKDelegate {
                 config = config.withEnvironment(env)
             }
         }
-        if debug != nil {
+        /*if debug != nil {
             config = config.withDebug(debug!)
-        }
+        }*/
 
         let handler = BerbixHandler(
             plugin: self,
-            clientID: clientID!,
             config: config.build(),
             callbackID: command.callbackId)
 

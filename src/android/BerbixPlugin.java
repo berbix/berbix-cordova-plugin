@@ -9,13 +9,18 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 import org.apache.cordova.PermissionHelper;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import com.berbix.berbixverify.BerbixEnvironment;
 import com.berbix.berbixverify.BerbixSDK;
-import com.berbix.berbixverify.BerbixSDKAdapter;
-import com.berbix.berbixverify.BerbixSDKOptions;
-import com.berbix.berbixverify.BerbixSDKOptionsBuilder;
+import com.berbix.berbixverify.BerbixConfiguration;
+import com.berbix.berbixverify.BerbixConfigurationBuilder;
+import com.berbix.berbixverify.BerbixConstants;
+import com.berbix.berbixverify.BerbixResultStatus;
+import com.berbix.berbixverify.activities.BerbixActivity;
 
-public class BerbixPlugin extends CordovaPlugin implements BerbixSDKAdapter {
+public class BerbixPlugin extends CordovaPlugin {
     private static final String VERIFY = "verify";
 
     private CallbackContext callbackContext;
@@ -35,45 +40,41 @@ public class BerbixPlugin extends CordovaPlugin implements BerbixSDKAdapter {
             return true;
         }
 
-        String clientID = config.optString("client_id");
-        String templateKey = config.optString("template_key");
         String baseURL = config.optString("base_url");
         String clientToken = config.optString("client_token");
         String environment = config.optString("environment");
         boolean debug = config.optBoolean("debug", false);
 
-        if (clientID == null) {
-            callbackContext.error("cannot start berbix flow without client ID");
-            return true;
-        }
+        Log.e("berbix-cordova", "options extracted");
 
-        BerbixSDKOptionsBuilder options = new BerbixSDKOptionsBuilder();
+        BerbixConfigurationBuilder optionsBuilder = new BerbixConfigurationBuilder();
 
-        if (!templateKey.isEmpty()) {
-            options = options.setTemplateKey(templateKey);
-        }
         if (!baseURL.isEmpty()) {
-            options = options.setBaseURL(baseURL);
+            optionsBuilder = optionsBuilder.setBaseURL(baseURL);
         }
         if (!clientToken.isEmpty()) {
-            options = options.setClientToken(clientToken);
+            optionsBuilder = optionsBuilder.setClientToken(clientToken);
         }
         if (!environment.isEmpty()) {
             BerbixEnvironment env = getEnvironment(environment);
             if (env != null) {
-                options = options.setEnvironment(env);
+                optionsBuilder = optionsBuilder.setEnvironment(env);
             }
         }
         if (debug) {
-            options = options.setDebug(debug);
+            optionsBuilder = optionsBuilder.setDebug(debug);
         }
 
-        BerbixSDK sdk = new BerbixSDK(clientID);
-        final BerbixSDKOptions sdkOptions = options.build();
+        final BerbixConfiguration options = optionsBuilder.build();
+        BerbixSDK sdk = new BerbixSDK();
+
+        cordova.setActivityResultCallback(this);
 
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
-                sdk.startFlow(BerbixPlugin.this.cordova.getActivity(), BerbixPlugin.this, sdkOptions);
+                Intent intent = new Intent(BerbixPlugin.this.cordova.getActivity(), BerbixActivity.class);
+                intent.putExtra("config", options);
+                BerbixPlugin.this.cordova.startActivityForResult(BerbixPlugin.this, intent, BerbixConstants.REQUEST_CODE_BERBIX_FLOW);
             }
         });
 
@@ -83,13 +84,34 @@ public class BerbixPlugin extends CordovaPlugin implements BerbixSDKAdapter {
     }
 
     @Override
-    public void onComplete() {
-        this.callbackContext.success();
+    public void onRestoreStateForActivityResult(Bundle state, CallbackContext callbackContext) {
+        this.callbackContext = callbackContext;
     }
 
     @Override
-    public void onError(Throwable error) {
-        this.callbackContext.error(error.toString());
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (requestCode == BerbixConstants.REQUEST_CODE_BERBIX_FLOW) {
+            switch (BerbixResultStatus.getStatus(resultCode)) {
+                case SUCCESS:
+                    this.callbackContext.success();
+                    break;
+                case USER_EXIT:
+                    this.callbackContext.error("userExitError");
+                    break;
+                case NO_CAMERA_PERMISSIONS:
+                case UNABLE_TO_LAUNCH_CAMERA:
+                    this.callbackContext.error("cameraAccessError");
+                    break;
+                case ERROR:
+                    this.callbackContext.error("apiError");
+                    break;
+                case UNEXPECTED_RESULT_STATUS:
+                    this.callbackContext.error("unexpectedResult");
+                    break;
+            }
+        }
     }
 
     private static BerbixEnvironment getEnvironment(String environment) {

@@ -45,8 +45,6 @@ berbix.verify(
     // Verification did not complete successfully
   },
   {
-    client_id: "your client id here",
-    template_key: "your template key here",
     client_token: "your client token here"
   }
 );
