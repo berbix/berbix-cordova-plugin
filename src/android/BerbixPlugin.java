@@ -106,6 +106,7 @@ public class BerbixPlugin extends CordovaPlugin {
                     this.callbackContext.error("apiError");
                     break;
                 case UNEXPECTED_RESULT_STATUS:
+                case UNKNOWN_ERROR:
                     this.callbackContext.error("unexpectedResult");
                     break;
             }

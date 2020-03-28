@@ -39,6 +39,6 @@
     <config-file target="AndroidManifest.xml" mode="merge" parent="/manifest/application">
       <activity android:name="com.berbix.berbixverify.activities.BerbixActivity" android:theme="@style/Theme.AppCompat.Light"/>
     </config-file>
-    <framework src="com.berbix:berbixverify:1.0.4"/>
+    <framework src="com.berbix:berbixverify:1.1.1"/>
   </platform>
 </plugin>
