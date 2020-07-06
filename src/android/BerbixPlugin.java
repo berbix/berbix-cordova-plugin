@@ -106,8 +106,12 @@ public class BerbixPlugin extends CordovaPlugin {
                     this.callbackContext.error("apiError");
                     break;
                 case UNEXPECTED_RESULT_STATUS:
-                case UNKNOWN_ERROR:
                     this.callbackContext.error("unexpectedResult");
+                    break;
+                case UNKNOWN_ERROR:
+                    // There appears to be an android issue whereby a 0 result can be returned
+                    // immediately upon creating the activity. We ignore those to see if that
+                    // addresses the underlying issue.
                     break;
             }
         }

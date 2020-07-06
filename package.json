@@ -1,6 +1,6 @@
 {
   "name": "berbix-cordova-plugin",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Cordova plugin for using the Berbix Verify flow.",
   "repository": {
     "type": "git",
