@@ -32,6 +32,6 @@
     </config-file>
     <source-file src="src/android/BerbixPlugin.java" target-dir="src/com/berbix/cordova" />
     <framework src="src/android/berbix.gradle" custom="true" type="gradleReference" />
-    <framework src="com.berbix:berbixverify:2.0.0-beta1"/>
+    <framework src="com.berbix:berbixverify:2.0.0-beta2"/>
   </platform>
 </plugin>
