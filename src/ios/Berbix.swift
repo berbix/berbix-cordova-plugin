@@ -47,7 +47,6 @@ class BerbixHandler : BerbixFlowDelegate {
 
         let baseURL = options["base_url"] as? String
         let clientToken = options["client_token"] as? String
-        let environment = options["environment"] as? String
         let debug = options["debug"] as? Bool
 
         var config = BerbixConfigurationBuilder()
@@ -57,11 +56,6 @@ class BerbixHandler : BerbixFlowDelegate {
         }
         if clientToken != nil {
             config = config.withClientToken(clientToken!)
-        }
-        if environment != nil {
-            if let env = getEnvironment(environment!) {
-                config = config.withEnvironment(env)
-            }
         }
         /*if debug != nil {
             config = config.withDebug(debug!)
@@ -73,18 +67,5 @@ class BerbixHandler : BerbixFlowDelegate {
             callbackID: command.callbackId)
 
         handler.start(controller: viewController)
-    }
-
-    func getEnvironment(_ env: String) -> BerbixEnvironment? {
-        switch env {
-        case "production":
-            return .production
-        case "staging":
-            return .staging
-        case "sandbox":
-            return .sandbox
-        default:
-            return nil
-        }
     }
 }

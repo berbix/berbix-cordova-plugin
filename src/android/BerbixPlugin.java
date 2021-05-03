@@ -12,7 +12,6 @@ import org.apache.cordova.PermissionHelper;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.berbix.berbixverify.BerbixEnvironment;
 import com.berbix.berbixverify.BerbixSDK;
 import com.berbix.berbixverify.BerbixConfiguration;
 import com.berbix.berbixverify.BerbixConfigurationBuilder;
@@ -42,7 +41,6 @@ public class BerbixPlugin extends CordovaPlugin {
 
         String baseURL = config.optString("base_url");
         String clientToken = config.optString("client_token");
-        String environment = config.optString("environment");
         boolean debug = config.optBoolean("debug", false);
 
         BerbixConfigurationBuilder optionsBuilder = new BerbixConfigurationBuilder();
@@ -52,12 +50,6 @@ public class BerbixPlugin extends CordovaPlugin {
         }
         if (!clientToken.isEmpty()) {
             optionsBuilder = optionsBuilder.setClientToken(clientToken);
-        }
-        if (!environment.isEmpty()) {
-            BerbixEnvironment env = getEnvironment(environment);
-            if (env != null) {
-                optionsBuilder = optionsBuilder.setEnvironment(env);
-            }
         }
         if (debug) {
             optionsBuilder = optionsBuilder.setDebug(debug);
@@ -114,19 +106,6 @@ public class BerbixPlugin extends CordovaPlugin {
                     // addresses the underlying issue.
                     break;
             }
-        }
-    }
-
-    private static BerbixEnvironment getEnvironment(String environment) {
-        switch (environment) {
-        case "production":
-            return BerbixEnvironment.PRODUCTION;
-        case "staging":
-            return BerbixEnvironment.STAGING;
-        case "sandbox":
-            return BerbixEnvironment.SANDBOX;
-        default:
-            return null;
         }
     }
 }
