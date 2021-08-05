@@ -20,7 +20,7 @@
         <source url="https://github.com/berbix/berbix-ios-spec.git"/>
       </config>
       <pods use-frameworks="true">
-        <pod name="Berbix" spec="2.2.0" />
+        <pod name="Berbix" spec="2.2.1" />
       </pods>
     </podspec>
   </platform>
